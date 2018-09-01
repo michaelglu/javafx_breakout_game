@@ -11,7 +11,7 @@ public class Ball {
     public Ball(int width,int height){
         xDirection=1;
         yDirection=1;
-        mySpeed=120;
+        mySpeed=180;
         image =new Image(this.getClass().getClassLoader().getResourceAsStream("ball.gif"));
         icon = new ImageView(image);
         icon.setX(width / 2 - icon.getBoundsInLocal().getWidth() / 2);

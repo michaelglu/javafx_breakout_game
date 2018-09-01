@@ -28,13 +28,14 @@ public class Main extends Application  {
 
     // some things we need to remember during our game
     private Scene myScene;
+    private Block[][]myBlocks;
     private Ball myBall;
     private Paddle myPaddle;
     private ImageView myBouncer;//BALL1
 
     private Rectangle myMover;//TOP BLOCK
-    private Block myBlock;
-    private Rectangle blockRectangle;
+//    private Block myBlock;
+//    private Rectangle blockRectangle;
 
 
     @Override
@@ -64,8 +65,15 @@ public class Main extends Application  {
         myBall=new Ball(width,height);
         myBouncer = myBall.getIcon();
 
-        myBlock=new Block(1);
-        blockRectangle=myBlock.getBlock();
+        //GENERATE BLOCKS on the screen:
+        myBlocks=new Block[5][8];
+        for(int i=0;i<5;i++)
+        {
+            for(int j=0;j<8;j++){
+                myBlocks[i][j]=new Block(j,i);
+                root.getChildren().add(myBlocks[i][j].getBlock());
+            }
+        }
 
 
 
@@ -74,9 +82,7 @@ public class Main extends Application  {
 
         // order added to the group is the order in which they are drawn
         root.getChildren().add(myBouncer);
-        root.getChildren().add(blockRectangle);
         root.getChildren().add(myMover);
-       // root.getChildren().add(myGrower);
         // respond to input
         scene.setOnKeyPressed(e -> myPaddle.handleKeyInput(e.getCode()));
         scene.setOnMouseClicked(e -> handleMouseInput(e.getX(), e.getY()));
@@ -91,15 +97,22 @@ public class Main extends Application  {
 
         myBall.paddleCollide(myMover.getX(),myMover.getY()-myMover.getHeight()/2);
         }
+       for(int i=0;i<5;i++)
+       {
+           for(int j=0;j<8;j++)
+           {
+               if (myBlocks[i][j].getBlock().getBoundsInParent().intersects(myBouncer.getBoundsInParent())&&myBlocks[i][j].getVisibility()) {
 
-        if (blockRectangle.getBoundsInParent().intersects(myBouncer.getBoundsInParent())) {
+                   myBall.blockCollide(myBlocks[i][j].getBlock().getY()-myBlocks[i][j].getBlock().getHeight()/2,myBlocks[i][j].getBlock().getY()+myBlocks[i][j].getBlock().getHeight()/2,myBlocks[i][j].getBlock().getX()+myBlocks[i][j].getBlock().getWidth()/2,myBlocks[i][j].getBlock().getX()-myBlocks[i][j].getBlock().getWidth()/2);
+                   myBlocks[i][j].hit();
+                   if(myBlocks[i][j].getMyLives()==0){
+                       rootGroup.getChildren().remove(myBlocks[i][j].getBlock());
+                   }
+               }
+           }
+       }
 
-            myBall.blockCollide(blockRectangle.getY()-blockRectangle.getHeight()/2,blockRectangle.getY()+blockRectangle.getHeight()/2,blockRectangle.getX()+blockRectangle.getWidth()/2,blockRectangle.getX()-blockRectangle.getWidth()/2);
-            myBlock.hit();
-            if(myBlock.getMyLives()==0){
-                rootGroup.getChildren().remove(blockRectangle);
-            }
-        }
+
 
         myBall.go(elapsedTime,SCREEN_WIDTH,SCREEN_HEIGHT);
 

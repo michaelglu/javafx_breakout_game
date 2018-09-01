@@ -3,12 +3,14 @@ import javafx.scene.shape.Rectangle;
 
 public class Block {
     private int myLives;
-    private int myWidth=50;
-    private int myHeight=30;
+    private int myWidth=45;
+    private int myHeight=20;
+    private boolean isVisible;
     private Rectangle myRectangle;
-    public Block(int position){//location might need tweaking
+    public Block(int xPosition,int yPosition){//location might need tweaking
         myLives=3;
-        myRectangle=new Rectangle(50+position*(55),30, myWidth, myHeight);
+        isVisible=true;
+        myRectangle=new Rectangle(xPosition*(50),100+yPosition*25, myWidth, myHeight);
         myRectangle.setFill(Color.RED);
     }
     public Rectangle getBlock(){return myRectangle;}
@@ -22,8 +24,15 @@ public class Block {
         {
             myRectangle.setFill(Color.ORANGE);
         }
+        else if (myLives==0)
+        {
+            isVisible=false;
+        }
     }
     public int getMyLives(){
         return myLives;
+    }
+    public boolean getVisibility(){
+        return isVisible;
     }
 }
