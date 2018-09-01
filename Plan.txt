@@ -1,0 +1,21 @@
+Michael Glushakov
+mg367
+
+The variant of the Breakout game that I found interesting can be found at https://www.crazygames.com/game/atari-breakout
+This variant has almost all features described in the assignment assignment as it features different levels, powerups,
+lives and scoring system.
+
+For my game, each level will feature a harder block type which would take more hits to destroy. I would like to try to
+create an algorithm which would randomly position blocks on the screen for each level, given the types of blocks used in
+the level, so for level 1, easy blocks would be positioned randomly on the screen, for level 2 easy and medium blocks
+would be positioned randomly on the screen. I might use a math.random algorithm with different weight values placed on
+different block types.
+
+The powerups that I want to create woudl be, adding an extra ball, increasing paddle size and increasing ball speed.
+
+The cheat key I'd like to include adds an extra life, so that the levels could be completed with ease (especially useful
+for debugging purposes).
+
+The extra feature I'd like to add is an endless mode. If I succeed in an algorithm which randomly puts blocks on the
+scene, I could easily modify this algorithm to work continuously inside the game loop.
+
