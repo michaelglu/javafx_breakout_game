@@ -1,5 +1,7 @@
+import javafx.animation.KeyFrame;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.util.Duration;
 
 public class Ball {
     private int xDirection;
@@ -7,11 +9,13 @@ public class Ball {
     private int mySpeed;
     private ImageView icon;
     private Image image;
+    private boolean hitsEnabled;
 
     public Ball(int width,int height){
+        hitsEnabled=true;
         xDirection=1;
         yDirection=1;
-        mySpeed=180;
+        mySpeed=0;
         image =new Image(this.getClass().getClassLoader().getResourceAsStream("ball.gif"));
         icon = new ImageView(image);
         icon.setX(width / 2 - icon.getBoundsInLocal().getWidth() / 2);
@@ -42,24 +46,31 @@ public class Ball {
 
     public void blockCollide (double blockTop,double blockBottom, double blockRight, double blockLeft)
     {
-       if(icon.getX()<=blockLeft||icon.getX()>=blockRight)
+       if(icon.getX()==blockLeft||icon.getX()==blockRight)
        {
            xDirection=-1*xDirection;
        }
-       if(icon.getY()>=blockTop||icon.getY()<=blockBottom){
-           yDirection=-1*yDirection;
-       }
+       yDirection=-1*yDirection;
+       long current=System.nanoTime();
+
     }
-    public void paddleCollide(double paddleCenter,double paddleTop){
+    public void paddleCollide(double paddleCenter,double paddleY){
         if(icon.getX()<paddleCenter)
         {
             xDirection=-1*xDirection;
         }
-        if(icon.getY()<=paddleTop)
-        {
+        if(icon.getY()>paddleY){
             yDirection=-1*yDirection;
         }
 
+
+
+    }
+    public boolean getHitsEnabled(){
+        return hitsEnabled;
+    }
+    public void setHitsEnabled(boolean bool){
+        hitsEnabled=bool;
     }
 
 }
