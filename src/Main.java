@@ -116,12 +116,19 @@ public class Main extends Application  {
 
                    if (myBlocks[i][j].getBlock().getBoundsInParent().intersects(myBall.getIcon().getBoundsInParent())&&myBlocks[i][j].getVisibility()) {
 
-                           myBlocks[i][j].hit();
-
-                       myBall.blockCollide(myBlocks[i][j].getBlock().getY()-myBlocks[i][j].getBlock().getFitHeight()/2,myBlocks[i][j].getBlock().getY()+myBlocks[i][j].getBlock().getFitHeight()/2,myBlocks[i][j].getBlock().getX()+myBlocks[i][j].getBlock().getFitWidth()/2,myBlocks[i][j].getBlock().getX()-myBlocks[i][j].getBlock().getFitWidth()/2);
 
 
-                   if(myBlocks[i][j].getMyLives()==0){
+                              myBlocks[i][j].hit();
+
+
+//
+                       myBall.blockCollide(myBlocks[i][j].getBlock().getY()-myBlocks[i][j].getBlock().getFitHeight()/2,myBlocks[i][j].getBlock().getY()+myBlocks[i][j].getBlock().getFitHeight()/2,myBlocks[i][j].getBlock().getX()+myBlocks[i][j].getBlock().getFitWidth()/2,myBlocks[i][j].getBlock().getX()-myBlocks[i][j].getBlock().getFitWidth()/2,myBlocks[i][j].getBlock().getX());
+
+
+
+
+
+                       if(myBlocks[i][j].getMyLives()==0){
                        rootGroup.getChildren().remove(myBlocks[i][j].getBlock());
                    }
 
@@ -178,7 +185,7 @@ public class Main extends Application  {
     }
     public void startGame(Group myGroup){
         myGroup.getChildren().remove(splashScreen);
-        myBall.setSpeed(120);
+        myBall.setSpeed(180);
     }
 
     public static void main (String[] args) {

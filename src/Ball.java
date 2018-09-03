@@ -10,9 +10,13 @@ public class Ball {
     private int myLives;
     private ImageView icon;
     private Image image;
+    private long timeOfLastHit;
+    private boolean canHit;
 
 
     public Ball(int width,int height){
+        canHit=true;
+        timeOfLastHit=System.nanoTime();
         myLives =3;
         xDirection=1;
         yDirection=1;
@@ -37,7 +41,7 @@ public class Ball {
         if(icon.getX()>screenWidth-1||icon.getX()<1){
             xDirection=-1*xDirection;
         }
-        if(icon.getY()<100){
+        if(icon.getY()<75){
 
             yDirection=-1*yDirection;
         }
@@ -52,28 +56,36 @@ public class Ball {
 
     }
 
-    public void blockCollide (double blockTop,double blockBottom, double blockRight, double blockLeft)
+    public void blockCollide (double blockTop,double blockBottom, double blockRight, double blockLeft, double blockCenter)
     {
-       if(icon.getX()==blockLeft||icon.getX()==blockRight)
-       {
-           xDirection=-1*xDirection;
-       }
-       yDirection=-1*yDirection;
+       // long currentTime = System.nanoTime();
+       // System.out.println("TOP: "+blockTop+" Bottom: "+blockBottom);
+        if(icon.getX() < blockCenter&&(icon.getY()>blockTop&&icon.getY()<blockBottom)){
+            xDirection=-1*Math.abs(xDirection);
+
+        }
+
+        else if(icon.getX() > blockCenter&&(icon.getY()>=blockTop&&icon.getY()<=blockBottom))
+        {
+            xDirection=Math.abs(xDirection);
+        }
+
+            yDirection = -1 * yDirection;
+            timeOfLastHit = System.nanoTime();
 
 
     }
     public void paddleCollide(double paddleCenter,double paddleY){
-        if(icon.getX()<paddleCenter)
-        {
-            xDirection=-1*xDirection;
-        }
-        if(icon.getY()>paddleY){
-            yDirection=-1*yDirection;
-        }
+
+            if(icon.getY()>paddleY){
+                yDirection=-1*yDirection;
+            }
+
 
     }
     public int getMyLives(){
         return myLives;
     }
+    public long getTimeOfLastHit(){return timeOfLastHit;}
 
 }
