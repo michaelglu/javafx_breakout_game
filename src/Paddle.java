@@ -1,7 +1,9 @@
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import java.awt.*;
 
 public class Paddle {
     private int myHeight,myWidth,mySpeed;

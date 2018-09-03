@@ -7,12 +7,13 @@ public class Ball {
     private int xDirection;
     private int yDirection;
     private int mySpeed;
+    private int myLives;
     private ImageView icon;
     private Image image;
-    private boolean hitsEnabled;
+
 
     public Ball(int width,int height){
-        hitsEnabled=true;
+        myLives =3;
         xDirection=1;
         yDirection=1;
         mySpeed=0;
@@ -34,12 +35,19 @@ public class Ball {
     }
     public void checkWallCollision(int screenWidth, int screenHeight){
         if(icon.getX()>screenWidth-1||icon.getX()<1){
-
             xDirection=-1*xDirection;
         }
-        if(icon.getY()>screenHeight-1||icon.getY()<1){
+        if(icon.getY()<100){
 
             yDirection=-1*yDirection;
+        }
+        if(icon.getY()>=screenHeight) {
+            myLives -= 1;
+            mySpeed=0;
+            icon.setX(screenWidth / 2 - icon.getBoundsInLocal().getWidth() / 2);
+            icon.setY(screenHeight / 2 - icon.getBoundsInLocal().getHeight() / 2);
+            xDirection=1;
+            yDirection=1;
         }
 
     }
@@ -51,7 +59,7 @@ public class Ball {
            xDirection=-1*xDirection;
        }
        yDirection=-1*yDirection;
-       long current=System.nanoTime();
+
 
     }
     public void paddleCollide(double paddleCenter,double paddleY){
@@ -63,14 +71,9 @@ public class Ball {
             yDirection=-1*yDirection;
         }
 
-
-
     }
-    public boolean getHitsEnabled(){
-        return hitsEnabled;
-    }
-    public void setHitsEnabled(boolean bool){
-        hitsEnabled=bool;
+    public int getMyLives(){
+        return myLives;
     }
 
 }
