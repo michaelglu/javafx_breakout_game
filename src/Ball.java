@@ -7,6 +7,7 @@ public class Ball {
     private int xDirection;
     private int yDirection;
     private int mySpeed;
+    private int gameSpeed=180;
     private int myLives;
     private ImageView icon;
     private Image image;
@@ -25,6 +26,13 @@ public class Ball {
         icon = new ImageView(image);
         icon.setX(width / 2 - icon.getBoundsInLocal().getWidth() / 2);
         icon.setY(height / 2 - icon.getBoundsInLocal().getHeight() / 2);
+    }
+    public void resetBall(int width,int height){
+        icon.setX(width / 2 - icon.getBoundsInLocal().getWidth() / 2);
+        icon.setY(height / 2 - icon.getBoundsInLocal().getHeight() / 2);
+
+        mySpeed=0;
+
     }
 
 

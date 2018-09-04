@@ -14,7 +14,7 @@ public class Paddle {
     {
         myHeight=10;
         myWidth=75;
-        mySpeed=10;
+        mySpeed=20;
         image =new Image(this.getClass().getClassLoader().getResourceAsStream("paddle.gif"));
         myRectangle= new ImageView(image);
        // myRectangle=new Rectangle(sceneWidth / 2 - 25, sceneHeight-50, myWidth, myHeight);
