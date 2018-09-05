@@ -33,34 +33,30 @@ public class Main extends Application  {
     private Block[][]myBlocks;
     private Ball myBall;
     private Paddle myPaddle;
-    private Rectangle myMover;//TOP BLOCK
     private ImageView splashScreen;
-    private ImageView gameOver;
     private Image lifeImage;
-    private Image splashImage;
-    private Image gameOverImage;
+    private Image splashImage,gameOverImage;
     private ArrayList<ImageView> lives;
     private Text scoreBoard;
-    private int blockCount;
-    private int score;
-    private int currentLevel;
-    private boolean endlessMode;
+    private int blockCount;//Number of blocks visible on the screen
+    private int score;//player score
+    private int currentLevel;//current level
+    private boolean endlessMode;//whether or not endless mode is enabled
+    private Text levelBoard;
 
 
     @Override
     public void start (Stage stage) {
-
-       //Load Variables Images + SplashScreen
+       //Load Variables
         scoreBoard=new Text("Score: ");
+        levelBoard=new Text("");
         endlessMode=false;
-
-        currentLevel=4;
+        currentLevel=1;
+        lives=new ArrayList();
+        //Load Images
         gameOverImage = new Image(this.getClass().getClassLoader().getResourceAsStream("gameover.gif"));
         splashImage=new Image(this.getClass().getClassLoader().getResourceAsStream("splashScreen.gif"));
         lifeImage=new Image(this.getClass().getClassLoader().getResourceAsStream("life.gif"));
-        splashScreen=new ImageView(splashImage);
-        splashScreen.setFitHeight(SCREEN_HEIGHT);
-        splashScreen.setFitWidth(SCREEN_WIDTH);
         // create one top level collection to organize the things in the scene
         var root = new Group();
         // attach scene to the stage and display it
@@ -80,53 +76,54 @@ public class Main extends Application  {
     private Scene setupGame (int sceneWidth, int sceneHeight, Paint background, int level, Group root) {
         // create a place to see the shapes
         var scene = new Scene(root, sceneWidth, sceneHeight, background);
-        //Load Game Elements
+        //Load Nodes
+        //splash screen
+        splashScreen=new ImageView(splashImage);
+        splashScreen.setFitHeight(SCREEN_HEIGHT);
+        splashScreen.setFitWidth(SCREEN_WIDTH);
+        //Ball
         myBall=new Ball(sceneWidth,sceneHeight);
+        //Paddle
         myPaddle=new Paddle(sceneWidth,sceneHeight);
-        if(currentLevel<4){
-            setupLevel(root,currentLevel);
-        }
-        else{
-            setupLevel(root,3);
-            endlessMode=true;
-        }
+        //The game has 3 normal levels and an endless mode, for each normal level
+//        if(currentLevel>=4){//endless level is set up with hardest blocks only
+//            setupLevel(root,3);
+//            endlessMode=true;
+//        }
+//        else{
+//            setupLevel(root,currentLevel);
+//        }
+        setupLevel(root,currentLevel);
 
-        // order added to the group is the order in which they are drawn
-        root.getChildren().add(myBall.getIcon());
-        root.getChildren().add(scoreBoard);
-        root.getChildren().add(myPaddle.getPaddle());
+
         root.getChildren().add(splashScreen);
-        // respond to input
-        scene.setOnKeyPressed(e -> handleKeyInput(e.getCode(),root,SCREEN_WIDTH));
-//        scene.setOnMouseClicked(e -> handleMouseInput(e.getX(), e.getY()));
+        scene.setOnKeyPressed(e -> handleKeyInput(e.getCode(),root,SCREEN_WIDTH));// respond to keyboard input
         return scene;
     }
 
     private void step (double elapsedTime, Group rootGroup) {
-        // Check if there are lives left
-       if (myBall.getMyLives()==0)
-       {
+//        System.out.println("BLOCKS LEFT: "+blockCount);
+
+       if (myBall.getMyLives()==0){// Check if there are lives left
            splashScreen.setImage(gameOverImage);
            rootGroup.getChildren().clear();
+           setupLevel(rootGroup,1);
            rootGroup.getChildren().add(splashScreen);
        }
-       //Check if a life was lost during the last step
-       if(myBall.getMyLives()>0&&myBall.getMyLives()<lives.size()){
+       if(myBall.getMyLives()>0&&myBall.getMyLives()<lives.size()){//Check if a life was lost during the last step
            rootGroup.getChildren().remove(lives.get(lives.size()-1));
             lives.remove(lives.size()-1);
         }
-        //Check if the level is complete:
-        if(!endlessMode){
+        if(!endlessMode){//Check if the level is complete; endless mode is never complete=> don't check during endless mode
             if(blockCount==0){
                 currentLevel+=1;
-                // System.out.println("Loading level: "+currentLevel);
+//                System.out.println("Level: "+currentLevel);
                 setupLevel(rootGroup,currentLevel);
             }
         }
-        else if(blockCount<5){
+        else if(blockCount<5){//Fires during endless mode
             setBlocks(rootGroup,3);
         }
-
         //Paddle collision
         if (myPaddle.getPaddle().getBoundsInParent().intersects(myBall.getIcon().getBoundsInParent())) {
             myBall.paddleCollide(myPaddle.getPaddle().getX(),myPaddle.getPaddle().getY()-myPaddle.getPaddle().getFitHeight()/2);
@@ -134,16 +131,17 @@ public class Main extends Application  {
         //Loop through blocks[][] to check for collisions & subtract lives upon collision
        for(int i=0;i<5;i++)//rows
        {
-           for(int j=0;j<8;j++)//cols
+           for(int j=0;j<8;j++)//columns
            {
-               if(myBlocks[i][j]!=null){//some are empty
+               if(myBlocks[i][j]!=null){//some are empty, see setBlocks()
+                   //myBlock.check for collisions, myBall.check for collisions()
                    if (myBlocks[i][j].getBlock().getBoundsInParent().intersects(myBall.getIcon().getBoundsInParent())&&myBlocks[i][j].getVisibility()) {
                        myBlocks[i][j].hit();
                        score+=10;
                        scoreBoard.setText("Score: "+score);
                        myBall.blockCollide(myBlocks[i][j].getBlock().getY()-myBlocks[i][j].getBlock().getFitHeight()/2,myBlocks[i][j].getBlock().getY()+myBlocks[i][j].getBlock().getFitHeight()/2,myBlocks[i][j].getBlock().getX()+myBlocks[i][j].getBlock().getFitWidth()/2,myBlocks[i][j].getBlock().getX()-myBlocks[i][j].getBlock().getFitWidth()/2,myBlocks[i][j].getBlock().getX());
                        if(myBlocks[i][j].getMyLives()==0){
-                       rootGroup.getChildren().remove(myBlocks[i][j].getBlock());
+                       rootGroup.getChildren().remove(myBlocks[i][j].getBlock());//Makes the block invisible
                        blockCount-=1;
                    }
                }}
@@ -152,40 +150,63 @@ public class Main extends Application  {
        //The ball's logic for checking for wall collisions is inside the go() method
         myBall.go(elapsedTime,SCREEN_WIDTH,SCREEN_HEIGHT);
     }
+
     public void handleKeyInput (KeyCode code, Group myGroup, int screenWidth) {
-        if (code == KeyCode.SPACE &&myBall.getMyLives()>0) {//For splashscreen
+        if (code == KeyCode.SPACE &&myBall.getMyLives()>0) {//For dismissing splashscreen
+//            setupLevel(myGroup,currentLevel);
             startGame(myGroup);
         }
+        if(code==KeyCode.I)
+        {
+            myBall.setIndestructable();
+        }
+        if(code==KeyCode.DIGIT2)
+        {
+            endlessMode=false;
+            currentLevel=2;
+            setupLevel(myGroup,currentLevel);
+        }
+        if(code==KeyCode.DIGIT3)
+        {
+            endlessMode=false;
+            currentLevel=3;
+            setupLevel(myGroup,currentLevel);
+        }
+        if (code==KeyCode.E)
+        {
+            currentLevel=4;
+            endlessMode=true;
+            setupLevel(myGroup,3);
+        }
+
         myPaddle.handleKeyInput(code,screenWidth);//for paddle
 
     }
-    public void setupLevel(Group root, int level){
-        //Scoreboard setup
-        scoreBoard.setY(25);
-        scoreBoard.setX(SCREEN_WIDTH-150);
-        scoreBoard.setFont(Font.font("Verdana", 20));
-        scoreBoard.setText("Score: ");
 
-        //Lives set up
-        lives=new ArrayList();
-        for(int i=0;i<myBall.getMyLives();i++)
+    public void setupLevel(Group root, int level){
+    //    System.out.println(level);
+        if(level>3)
         {
-           lives.add(new ImageView(lifeImage));
-           lives.get(i).setFitWidth(50);
-           lives.get(i).setFitHeight(50);
-           lives.get(i).setY(0);
-           lives.get(i).setX(55*i);
-           root.getChildren().add(lives.get(i));
+            endlessMode=true;
+            level=3;
         }
-        //score reset:
-        score =0;
+
+        root.getChildren().clear();
+        myBall.setLives(3);
+        blockCount=0;
+        root.getChildren().add(myBall.getIcon());//myBall.getIcon() returns the Imageview of the Ball
+        root.getChildren().add(scoreBoard);
+        root.getChildren().add(myPaddle.getPaddle());//myPaddle.getPaddle() returns the Imageview of the Paddle
+        root.getChildren().add(levelBoard);
+        setUpScoreBoard();
+        setUpLevelBoard(level);
+        setUpLives(root);
         //GENERATE BLOCKS on the screen:
         myBlocks=new Block[5][8];
         setBlocks(root,level);
+
         myBall.resetBall(SCREEN_WIDTH,SCREEN_HEIGHT);
-        if(currentLevel>1){
-            myBall.setSpeed(180);
-        }
+
     }
     public void setBlocks(Group root, int level){
         for(int i=0;i<5;i++)
@@ -210,8 +231,37 @@ public class Main extends Application  {
                         }
                     }
                 }
-
             }
+        }
+
+    }
+    public void setUpScoreBoard(){
+        //Scoreboard setup
+        scoreBoard.setY(25);
+        scoreBoard.setX(SCREEN_WIDTH-150);
+        scoreBoard.setFont(Font.font("Verdana", 16));
+        scoreBoard.setText("Score: ");
+        //score reset:
+        score =0;
+    }
+    public void setUpLevelBoard(int level){
+        //Scoreboard setup
+        levelBoard.setY(25);
+        levelBoard.setX(SCREEN_WIDTH-220);
+        levelBoard.setFont(Font.font("Verdana", 14));
+        if(!endlessMode){levelBoard.setText(""+level);}
+        else {levelBoard.setText("ENDLESS");}
+
+    }
+    public void setUpLives(Group root){
+        for(int i=0;i<myBall.getMyLives();i++)
+        {
+            lives.add(new ImageView(lifeImage));
+            lives.get(i).setFitWidth(50);
+            lives.get(i).setFitHeight(50);
+            lives.get(i).setY(0);
+            lives.get(i).setX(55*i);
+            root.getChildren().add(lives.get(i));
         }
 
     }

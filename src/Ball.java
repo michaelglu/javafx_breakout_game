@@ -7,16 +7,15 @@ public class Ball {
     private int xDirection;
     private int yDirection;
     private int mySpeed;
-    private int gameSpeed=180;
     private int myLives;
     private ImageView icon;
     private Image image;
     private long timeOfLastHit;
-    private boolean canHit;
+    private boolean indestructable;
 
 
     public Ball(int width,int height){
-        canHit=true;
+        indestructable=false;
         timeOfLastHit=System.nanoTime();
         myLives =3;
         xDirection=1;
@@ -24,15 +23,14 @@ public class Ball {
         mySpeed=0;
         image =new Image(this.getClass().getClassLoader().getResourceAsStream("ball.gif"));
         icon = new ImageView(image);
-        icon.setX(width / 2 - icon.getBoundsInLocal().getWidth() / 2);
-        icon.setY(height / 2 - icon.getBoundsInLocal().getHeight() / 2);
+        resetBall(width,height);
     }
     public void resetBall(int width,int height){
+        mySpeed=0;
         icon.setX(width / 2 - icon.getBoundsInLocal().getWidth() / 2);
         icon.setY(height / 2 - icon.getBoundsInLocal().getHeight() / 2);
-
-        mySpeed=0;
-
+        xDirection=1;
+        yDirection=1;
     }
 
 
@@ -54,20 +52,20 @@ public class Ball {
             yDirection=-1*yDirection;
         }
         if(icon.getY()>=screenHeight) {
-            myLives -= 1;
-            mySpeed=0;
-            icon.setX(screenWidth / 2 - icon.getBoundsInLocal().getWidth() / 2);
-            icon.setY(screenHeight / 2 - icon.getBoundsInLocal().getHeight() / 2);
-            xDirection=1;
-            yDirection=1;
+            if (!indestructable) {
+                myLives -= 1;
+                resetBall(screenWidth, screenHeight);
+            }
+            else{
+                yDirection=-1*yDirection;
+            }
         }
 
     }
 
     public void blockCollide (double blockTop,double blockBottom, double blockRight, double blockLeft, double blockCenter)
     {
-       // long currentTime = System.nanoTime();
-       // System.out.println("TOP: "+blockTop+" Bottom: "+blockBottom);
+
         if(icon.getX() < blockCenter&&(icon.getY()>blockTop&&icon.getY()<blockBottom)){
             xDirection=-1*Math.abs(xDirection);
 
@@ -94,6 +92,8 @@ public class Ball {
     public int getMyLives(){
         return myLives;
     }
+    public void setLives(int lives){myLives=lives;}
     public long getTimeOfLastHit(){return timeOfLastHit;}
+    public void setIndestructable(){indestructable=true;}
 
 }
