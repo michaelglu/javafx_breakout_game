@@ -15,14 +15,14 @@ public class Ball {
     private boolean indestructable;
     private Paddle myPaddle;
     private boolean isSpeedy;
-    private int speedyCount;
+    private boolean smartPaddle;
 
 
 
 
     public Ball(int width, int height, Paddle paddle){
         isSpeedy=false;
-        speedyCount=0;
+        smartPaddle=false;
         myPaddle=paddle;
         indestructable=false;
         timeOfLastHit=System.nanoTime();
@@ -37,6 +37,7 @@ public class Ball {
     }
     public void resetBall(int width,int height){
         isSpeedy=false;
+        smartPaddle=false;
         mySpeed=0;
         icon.setX(width / 2 - icon.getBoundsInLocal().getWidth() / 2);
         icon.setY(height / 2 - icon.getBoundsInLocal().getHeight() / 2);
@@ -59,7 +60,7 @@ public class Ball {
 
     public void checkPaddleCollisions(){
         if (myPaddle.getPaddle().getBoundsInParent().intersects(icon.getBoundsInParent())) {
-            paddleCollide(myPaddle.getPaddle().getX(),myPaddle.getPaddle().getY()-myPaddle.getPaddle().getFitHeight()/2);
+            paddleCollide(myPaddle.getPaddle().getX()+myPaddle.getPaddle().getFitWidth()/2,myPaddle.getPaddle().getY()-myPaddle.getPaddle().getFitHeight()/2);
         }
     }
     public void checkWallCollision(int screenWidth, int screenHeight){
@@ -81,6 +82,7 @@ public class Ball {
         }
 
     }
+    public void activateSmartPaddle(){smartPaddle=true;}
 
     public void blockCollide (double blockTop,double blockBottom, double blockRight, double blockLeft, double blockCenter)
     {
@@ -105,10 +107,20 @@ public class Ball {
             if(icon.getY()>paddleY){
                 yDirection=-1*yDirection;
             }
+            if(smartPaddle){
+                if(icon.getX()>paddleCenter){
+                    xDirection=Math.abs(xDirection);
+                }
+                else if(icon.getX()<paddleCenter){
+                    xDirection=-1*Math.abs(xDirection);
+                }
+            }
             if(isSpeedy){
                 mySpeed*=1.5;
                 isSpeedy=false;
             }
+
+
 
     }
     public void addLives(int lives){

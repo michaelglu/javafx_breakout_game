@@ -34,7 +34,7 @@ public class Block {
     public boolean checkCollisions(Ball ball){
         if (getBlock().getBoundsInParent().intersects(ball.getIcon().getBoundsInParent())&&getVisibility()) {
             hit();
-            ball.blockCollide(getBlock().getY()-getBlock().getFitHeight()/2,getBlock().getY()+getBlock().getFitHeight()/2,getBlock().getX()+getBlock().getFitWidth()/2,getBlock().getX()-getBlock().getFitWidth()/2,getBlock().getX());
+            ball.blockCollide(getBlock().getY(),getBlock().getY()+getBlock().getFitHeight(),getBlock().getX()+getBlock().getFitWidth(),getBlock().getX(),getBlock().getX());
             return true;
         }
         return false;

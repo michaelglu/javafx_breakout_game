@@ -218,6 +218,7 @@ public class Main extends Application  {
         setBlocks(root,level);
         myPaddle.reset(SCREEN_WIDTH,SCREEN_HEIGHT);
         myBall.resetBall(SCREEN_WIDTH,SCREEN_HEIGHT);
+        if(currentLevel>1){myBall.activateSmartPaddle();}
 
     }
     public void setBlocks(Group root, int level){
