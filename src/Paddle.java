@@ -6,7 +6,7 @@ import javafx.scene.shape.Rectangle;
 import java.awt.*;
 
 public class Paddle {
-    private int myHeight,myWidth,mySpeed;
+    private double myHeight,myWidth,mySpeed;
     private ImageView myRectangle;
     private Image image;
 
@@ -33,5 +33,16 @@ public class Paddle {
             myRectangle.setX(myRectangle.getX() - mySpeed);
         }
 
+    }
+    public void reset(int sceneWidth,int sceneHeight){
+        myRectangle.setFitWidth(myWidth);
+        myRectangle.setFitHeight(myHeight);
+        myRectangle.setX(sceneWidth / 2 - myWidth/2);
+        myRectangle.setY(sceneHeight-50);
+    }
+
+    //POWERUPS:
+    public void grow(){
+        myRectangle.setFitWidth(myWidth*1.5);
     }
 }

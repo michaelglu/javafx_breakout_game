@@ -1,3 +1,4 @@
+import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
@@ -9,6 +10,7 @@ public class Block {
     private int myHeight=20;
     private long myLasthit;
     private boolean isVisible;
+    private Powerup myPowerup;
    // private Rectangle myRectangle;
    private Image[] images;
     private ImageView myRectangle;
@@ -29,6 +31,14 @@ public class Block {
 
     }
     public ImageView getBlock(){return myRectangle;}
+    public boolean checkCollisions(Ball ball){
+        if (getBlock().getBoundsInParent().intersects(ball.getIcon().getBoundsInParent())&&getVisibility()) {
+            hit();
+            ball.blockCollide(getBlock().getY()-getBlock().getFitHeight()/2,getBlock().getY()+getBlock().getFitHeight()/2,getBlock().getX()+getBlock().getFitWidth()/2,getBlock().getX()-getBlock().getFitWidth()/2,getBlock().getX());
+            return true;
+        }
+        return false;
+    }
     public void hit(){
         long current=System.nanoTime();
         if(current>=myLasthit+17000000)//1sec/60fps=0.017sec=17,000,000 nanosecs
@@ -39,7 +49,11 @@ public class Block {
 
         if (myLives==0)
         {
+            if(myPowerup!=null){
+                myPowerup.letGo();
+            }
             isVisible=false;
+
         }
         else{
         myRectangle.setImage(images[myLives-1]);
@@ -51,5 +65,9 @@ public class Block {
     }
     public boolean getVisibility(){
          return isVisible;
+    }
+    public Powerup setMyPowerup(Group group, String type,Ball ball, Paddle paddle){
+                myPowerup=new Powerup(group,ball,paddle,type,getBlock().getX()+myWidth/2,getBlock().getY()+myHeight/2);
+                return myPowerup;
     }
 }

@@ -37,6 +37,7 @@ public class Main extends Application  {
     private Image lifeImage;
     private Image splashImage,gameOverImage;
     private ArrayList<ImageView> lives;
+    private ArrayList<Powerup> powerups;
     private Text scoreBoard;
     private int blockCount;//Number of blocks visible on the screen
     private int score;//player score
@@ -53,6 +54,7 @@ public class Main extends Application  {
         endlessMode=false;
         currentLevel=1;
         lives=new ArrayList();
+        powerups=new ArrayList<>();
         //Load Images
         gameOverImage = new Image(this.getClass().getClassLoader().getResourceAsStream("gameover.gif"));
         splashImage=new Image(this.getClass().getClassLoader().getResourceAsStream("splashScreen.gif"));
@@ -81,10 +83,11 @@ public class Main extends Application  {
         splashScreen=new ImageView(splashImage);
         splashScreen.setFitHeight(SCREEN_HEIGHT);
         splashScreen.setFitWidth(SCREEN_WIDTH);
-        //Ball
-        myBall=new Ball(sceneWidth,sceneHeight);
         //Paddle
         myPaddle=new Paddle(sceneWidth,sceneHeight);
+        //Ball
+        myBall=new Ball(sceneWidth,sceneHeight,myPaddle);
+
         //The game has 3 normal levels and an endless mode, for each normal level
 //        if(currentLevel>=4){//endless level is set up with hardest blocks only
 //            setupLevel(root,3);
@@ -110,6 +113,16 @@ public class Main extends Application  {
            setupLevel(rootGroup,1);
            rootGroup.getChildren().add(splashScreen);
        }
+       //check if life was added:
+        if(myBall.getMyLives()>lives.size()){//Check if a life was lost during the last step
+            lives.add(new ImageView(lifeImage));
+            lives.get(lives.size()-1).setFitWidth(20);
+            lives.get(lives.size()-1).setFitHeight(20);
+            lives.get(lives.size()-1).setY(0);
+            lives.get(lives.size()-1).setX(25*(myBall.getMyLives()-1));
+            rootGroup.getChildren().add(lives.get(lives.size()-1));
+        }
+
        if(myBall.getMyLives()>0&&myBall.getMyLives()<lives.size()){//Check if a life was lost during the last step
            rootGroup.getChildren().remove(lives.get(lives.size()-1));
             lives.remove(lives.size()-1);
@@ -124,22 +137,21 @@ public class Main extends Application  {
         else if(blockCount<5){//Fires during endless mode
             setBlocks(rootGroup,3);
         }
-        //Paddle collision
-        if (myPaddle.getPaddle().getBoundsInParent().intersects(myBall.getIcon().getBoundsInParent())) {
-            myBall.paddleCollide(myPaddle.getPaddle().getX(),myPaddle.getPaddle().getY()-myPaddle.getPaddle().getFitHeight()/2);
-        }
+
         //Loop through blocks[][] to check for collisions & subtract lives upon collision
+        for(Powerup p:powerups)
+        {
+            p.go(elapsedTime);
+        }
        for(int i=0;i<5;i++)//rows
        {
            for(int j=0;j<8;j++)//columns
            {
                if(myBlocks[i][j]!=null){//some are empty, see setBlocks()
                    //myBlock.check for collisions, myBall.check for collisions()
-                   if (myBlocks[i][j].getBlock().getBoundsInParent().intersects(myBall.getIcon().getBoundsInParent())&&myBlocks[i][j].getVisibility()) {
-                       myBlocks[i][j].hit();
+                   if (myBlocks[i][j].checkCollisions(myBall)) {
                        score+=10;
                        scoreBoard.setText("Score: "+score);
-                       myBall.blockCollide(myBlocks[i][j].getBlock().getY()-myBlocks[i][j].getBlock().getFitHeight()/2,myBlocks[i][j].getBlock().getY()+myBlocks[i][j].getBlock().getFitHeight()/2,myBlocks[i][j].getBlock().getX()+myBlocks[i][j].getBlock().getFitWidth()/2,myBlocks[i][j].getBlock().getX()-myBlocks[i][j].getBlock().getFitWidth()/2,myBlocks[i][j].getBlock().getX());
                        if(myBlocks[i][j].getMyLives()==0){
                        rootGroup.getChildren().remove(myBlocks[i][j].getBlock());//Makes the block invisible
                        blockCount-=1;
@@ -204,7 +216,7 @@ public class Main extends Application  {
         //GENERATE BLOCKS on the screen:
         myBlocks=new Block[5][8];
         setBlocks(root,level);
-
+        myPaddle.reset(SCREEN_WIDTH,SCREEN_HEIGHT);
         myBall.resetBall(SCREEN_WIDTH,SCREEN_HEIGHT);
 
     }
@@ -228,6 +240,16 @@ public class Main extends Application  {
                             myBlocks[i][j]=new Block(j,i,level);
                             root.getChildren().add(myBlocks[i][j].getBlock());
                             blockCount+=1;
+                            if(benchmark==5)
+                            {
+                                powerups.add(myBlocks[i][j].setMyPowerup(root,"lives",myBall,myPaddle));
+                            }
+                            else if(benchmark==6){
+                                powerups.add(myBlocks[i][j].setMyPowerup(root,"speedy",myBall,myPaddle));
+                            }
+                            else if(benchmark==7){
+                                powerups.add(myBlocks[i][j].setMyPowerup(root,"size",myBall,myPaddle));
+                            }
                         }
                     }
                 }
@@ -257,17 +279,17 @@ public class Main extends Application  {
         for(int i=0;i<myBall.getMyLives();i++)
         {
             lives.add(new ImageView(lifeImage));
-            lives.get(i).setFitWidth(50);
-            lives.get(i).setFitHeight(50);
+            lives.get(i).setFitWidth(20);
+            lives.get(i).setFitHeight(20);
             lives.get(i).setY(0);
-            lives.get(i).setX(55*i);
+            lives.get(i).setX(25*i);
             root.getChildren().add(lives.get(i));
         }
 
     }
     public void startGame(Group myGroup){
         myGroup.getChildren().remove(splashScreen);
-        myBall.setSpeed(180);
+        myBall.setSpeed(120);
     }
 
     public static void main (String[] args) {
