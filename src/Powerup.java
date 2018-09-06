@@ -11,7 +11,7 @@ public class Powerup {
     private int mySpeed;
     private Group myGroup;
     private boolean isVisible;
-    //1-increase paddle size; 2-sticky paddle; 3-points
+    //1-increase paddle size; 2-paddle increases ball speed; 3-extra life
     public Powerup(Group group,Ball ball, Paddle paddle, String type, double x, double y)
     {
         isVisible=true;

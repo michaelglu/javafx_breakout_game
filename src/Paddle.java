@@ -1,9 +1,6 @@
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import java.awt.*;
 
 public class Paddle {
     private double myHeight,myWidth,mySpeed;
@@ -17,7 +14,6 @@ public class Paddle {
         mySpeed=20;
         image =new Image(this.getClass().getClassLoader().getResourceAsStream("paddle.gif"));
         myRectangle= new ImageView(image);
-       // myRectangle=new Rectangle(sceneWidth / 2 - 25, sceneHeight-50, myWidth, myHeight);
         myRectangle.setFitWidth(myWidth);
         myRectangle.setFitHeight(myHeight);
         myRectangle.setX(sceneWidth / 2 - myWidth/2);

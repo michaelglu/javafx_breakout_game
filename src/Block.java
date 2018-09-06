@@ -1,20 +1,18 @@
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+
 
 public class Block {
-    private int myLives;
-    private int myWidth=40;
-    private int myHeight=20;
-    private long myLasthit;
-    private boolean isVisible;
-    private Powerup myPowerup;
-   // private Rectangle myRectangle;
+   private int myLives;
+   private int myWidth=40;
+   private int myHeight=20;
+   private long myLasthit;
+   private boolean isVisible;
+   private Powerup myPowerup;
    private Image[] images;
-    private ImageView myRectangle;
-    private Image image;
+   private ImageView myRectangle;
+
     public Block(int xPosition,int yPosition,int lives){
         myLasthit=0;
         images=new Image[3];
@@ -28,18 +26,17 @@ public class Block {
         myRectangle.setFitWidth(myWidth);
         myRectangle.setX(xPosition*50);
         myRectangle.setY(100+yPosition*25);
-
     }
     public ImageView getBlock(){return myRectangle;}
     public boolean checkCollisions(Ball ball){
         if (getBlock().getBoundsInParent().intersects(ball.getIcon().getBoundsInParent())&&getVisibility()) {
             hit();
-            ball.blockCollide(getBlock().getY(),getBlock().getY()+getBlock().getFitHeight(),getBlock().getX()+getBlock().getFitWidth(),getBlock().getX(),getBlock().getX());
+            ball.blockCollide(getBlock().getY(),getBlock().getY()+getBlock().getFitHeight(),getBlock().getX()+getBlock().getFitWidth(),getBlock().getX(),getBlock().getX()+getBlock().getFitWidth()/2,getBlock().getY()+getBlock().getFitHeight()/2);
             return true;
         }
         return false;
     }
-    public void hit(){
+    private void hit(){
         long current=System.nanoTime();
         if(current>=myLasthit+17000000)//1sec/60fps=0.017sec=17,000,000 nanosecs
         {
