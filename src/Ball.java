@@ -3,13 +3,13 @@ import javafx.scene.image.ImageView;
 
 
 public class Ball {
+    public final int DEFAULTBALLSPEED=120;
     private int xDirection;
     private int yDirection;
     private double mySpeed;
     private int myLives;
     private ImageView icon;
     private Image image;
-    private long timeOfLastHit;
     private boolean indestructable;
     private Paddle myPaddle;
     private boolean isSpeedy;
@@ -23,7 +23,6 @@ public class Ball {
         smartPaddle=false;
         myPaddle=paddle;
         indestructable=false;
-        timeOfLastHit=System.nanoTime();
         myLives =3;
         xDirection=1;
         yDirection=1;
@@ -86,53 +85,30 @@ public class Ball {
 
     public void blockCollide (double blockTop,double blockBottom, double blockRight, double blockLeft, double blockCenterX,double blockCenterY)
     {
-    //    System.out.println("BLOCK RIGHT:"+blockRight+" CENTER:"+blockCenterX +"LEFT: "+blockLeft);
-     //   System.out.println("ICON: "+(icon.getX()+icon.getFitWidth()));
-        //System.out.println("BLOCK TOP:"+(blockTop)+" CENTER:"+(blockCenterY) +"BOTTOM: "+blockBottom);
-        //hitting on the left side: direction=right>0, switch to left<0
-//        System.out.println("___________HIT___________");
-         if((icon.getX()+icon.getFitWidth())<=blockCenterX&&(icon.getX()+icon.getFitWidth()) >= blockLeft&&((icon.getY()+icon.getFitHeight()/2)>blockTop&&(icon.getY()+icon.getFitHeight()/2)<blockBottom))//&&(icon.getY()>blockTop&&(icon.getY())<blockBottom)
-    {
-        //System.out.println("turn right");
-        xDirection=-1*Math.abs(xDirection);
-//        System.out.println("turn left: x="+xDirection);
-    }
-//Hitting on the right side, diredtion<0 switch to >0
-        else if(icon.getX()>=blockCenterX&&icon.getX() <= blockRight&&((icon.getY()+icon.getFitHeight()/2)>blockTop&&(icon.getY()+icon.getFitHeight()/2)<blockBottom))//&&(icon.getY()>blockTop&&(icon.getY())<blockBottom)
-        {
-            //System.out.println("turn right");
+        //Hitting on the left side, xdiredtion>0 switch to <0
+         if((icon.getX()+icon.getFitWidth())<=blockCenterX&&(icon.getX()+icon.getFitWidth()) >= blockLeft&&((icon.getY()+icon.getFitHeight()/2)>blockTop&&(icon.getY()+icon.getFitHeight()/2)<blockBottom)){
+            xDirection=-1*Math.abs(xDirection);
+         }
+        //Hitting on the right side, xdiredtion<0 switch to >0
+        else if(icon.getX()>=blockCenterX&&icon.getX() <= blockRight&&((icon.getY()+icon.getFitHeight()/2)>blockTop&&(icon.getY()+icon.getFitHeight()/2)<blockBottom)){
             xDirection=Math.abs(xDirection);
-//            System.out.println("turn right: x="+xDirection);
-        }
-        else{
-//            System.out.println("KEEP X="+xDirection);
         }
         //Hitting top: go up
         if(icon.getY()+icon.getFitHeight()<=blockCenterY&&icon.getY()+icon.getFitHeight()>=blockTop&&yDirection>0)
         {
             yDirection = -1 * Math.abs(yDirection);
-//            System.out.println("turn up: y="+yDirection);
         }
         //Hitting bottom go down
-        else if(icon.getY()>blockCenterY&&icon.getY()<=blockBottom&&yDirection<0)
-        {
+        else if(icon.getY()>blockCenterY&&icon.getY()<=blockBottom&&yDirection<0) {
             yDirection = Math.abs(yDirection);
-//            System.out.println("turn down: y="+yDirection);
         }
-        else{
-//            System.out.println("KEEP Y="+yDirection);
-        }
-
-
-            timeOfLastHit = System.nanoTime();
-
-
     }
     private void paddleCollide(double paddleCenter,double paddleY){
 
             if(icon.getY()>paddleY){
                 yDirection=-1*yDirection;
             }
+
             if(smartPaddle){
                 if(icon.getX()>paddleCenter){
                     xDirection=Math.abs(xDirection);
@@ -145,9 +121,6 @@ public class Ball {
                 mySpeed*=1.5;
                 isSpeedy=false;
             }
-
-
-
     }
     public void addLives(int lives){
         myLives+=lives;

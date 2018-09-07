@@ -25,7 +25,7 @@ public class Paddle {
         if (code == KeyCode.RIGHT && (myRectangle.getX()+myRectangle.getFitWidth()/2)<sceneWidth-myWidth/2) {
             myRectangle.setX(myRectangle.getX() + mySpeed);
         }
-        else if (code == KeyCode.LEFT&&(myRectangle.getX()-myRectangle.getFitWidth()/2)>0-myWidth/2) {
+        else if (code == KeyCode.LEFT&&(myRectangle.getX())>0) {
             myRectangle.setX(myRectangle.getX() - mySpeed);
         }
 
@@ -39,6 +39,6 @@ public class Paddle {
 
     //POWERUPS:
     public void grow(){
-        myRectangle.setFitWidth(myWidth*1.5);
+        myRectangle.setFitWidth(myRectangle.getFitWidth()*1.5);
     }
 }

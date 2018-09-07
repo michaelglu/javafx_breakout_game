@@ -274,7 +274,7 @@ public class Main extends Application  {
     }
     public void startGame(Group myGroup){
         myGroup.getChildren().remove(splashScreen);
-        myBall.setSpeed(120);
+        myBall.setSpeed(myBall.DEFAULTBALLSPEED);
     }
 
     public static void main (String[] args) {

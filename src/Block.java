@@ -37,20 +37,17 @@ public class Block {
         return false;
     }
     private void hit(){
-        long current=System.nanoTime();
-        if(current>=myLasthit+17000000)//1sec/60fps=0.017sec=17,000,000 nanosecs
+        long current=System.nanoTime();//Delay ensures a block does not subtract lives twice per hit
+        if(current>=myLasthit+34000000)//1sec/60fps=0.017sec=17,000,000 nanosecs, so wait an extra frame
         {
             myLives-=1;
             myLasthit=System.nanoTime();
         }
-
-        if (myLives==0)
-        {
+        if (myLives==0) {
             if(myPowerup!=null){
                 myPowerup.letGo();
             }
             isVisible=false;
-
         }
         else{
         myRectangle.setImage(images[myLives-1]);
