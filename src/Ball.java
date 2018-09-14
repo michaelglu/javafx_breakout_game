@@ -1,28 +1,35 @@
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-
-
+/*
+Ball.java is a class containing the game logic for the Ball object;
+I beleive that it is well designed, because it's DRY, meaning that there is no repeated code; all methods are <20 lines
+in length due to an effective use of helper methods; The code is also SHY, as it does comeplete tasks when called by
+other classes: the Ball's go() method invoked in a Main class only takes 1 parameter: elapsed time and from then handles
+all the collision logic by itself; The BlockCollide method, called by the Block class also handles all the logic of the
+collision by itself. The Ball.java follows the principle of Tell the Other Guy because other classes can call a single
+method of the Ball class, and a Ball object takes care of the rest.
+The class also follows consistent naming shceme, as all variables and methods are in a camelCase format, which is a
+standard of the industry
+*/
 public class Ball {
-    public final int DEFAULTBALLSPEED=120;
+    public final int DEFAULT_BALL_SPEED=120;
+    private final int  MAX_BALL_SPEED=240;
     private int xDirection;
     private int yDirection;
     private double mySpeed;
     private int myLives;
     private ImageView icon;
     private Image image;
-    private boolean indestructable;
+    private boolean isIndestructible;
     private Paddle myPaddle;
     private boolean isSpeedy;
     private boolean smartPaddle;
-
-
-
 
     public Ball(int width, int height, Paddle paddle){
         isSpeedy=false;
         smartPaddle=false;
         myPaddle=paddle;
-        indestructable=false;
+        isIndestructible =false;
         myLives =3;
         xDirection=1;
         yDirection=1;
@@ -31,7 +38,7 @@ public class Ball {
         icon = new ImageView(image);
         icon.setFitWidth(15);
         icon.setFitHeight(15);
-        resetBall(width,height);
+        resetBall(Main.SCREEN_WIDTH,Main.SCREEN_HEIGHT);
 
     }
     public void resetBall(int width,int height){
@@ -45,17 +52,14 @@ public class Ball {
     }
 
 
-    public ImageView getIcon(){return icon;}
-    public void go(double elapsedTime, int screenWidth, int screenHeight){
-        checkPaddleCollisions();
 
-        checkWallCollision(screenWidth,screenHeight);
+    public void go(double elapsedTime){//Called in step() method of Main.java, handle's most of the Ball's logic
+        checkPaddleCollisions();
+        checkWallCollision(Main.SCREEN_WIDTH,Main.SCREEN_HEIGHT);
         icon.setX(icon.getX() + mySpeed * elapsedTime*xDirection);
         icon.setY(icon.getY() + mySpeed * elapsedTime*yDirection);
     }
-    public void setSpeed(int speed){
-        mySpeed=speed;
-    }
+
 
     public void checkPaddleCollisions(){
         if (myPaddle.getPaddle().getBoundsInParent().intersects(icon.getBoundsInParent())) {
@@ -71,7 +75,7 @@ public class Ball {
             yDirection=-1*yDirection;
         }
         if(icon.getY()>=screenHeight) {
-            if (!indestructable) {
+            if (!isIndestructible) {
                 myLives -= 1;
                 resetBall(screenWidth, screenHeight);
             }
@@ -81,8 +85,7 @@ public class Ball {
         }
 
     }
-    public void activateSmartPaddle(){smartPaddle=true;}
-
+    //blockCollide handles block collision logic, called by the Block's checkCollisions() method
     public void blockCollide (double blockTop,double blockBottom, double blockRight, double blockLeft, double blockCenterX,double blockCenterY)
     {
         //Hitting on the left side, xdiredtion>0 switch to <0
@@ -117,21 +120,26 @@ public class Ball {
                     xDirection=-1*Math.abs(xDirection);
                 }
             }
-            if(isSpeedy){
+            if(isSpeedy && mySpeed<MAX_BALL_SPEED){
                 mySpeed*=1.5;
                 isSpeedy=false;
             }
     }
+    public void activateSmartPaddle(){smartPaddle=true;}
+    public void setSpeed(int speed){
+        mySpeed=speed;
+    }
+    public ImageView getIcon(){return icon;}
     public void addLives(int lives){
         myLives+=lives;
     }
     public int getMyLives(){
         return myLives;
     }
-    public void setSpeedy(){
+    public void setSpeedy(){//called ny Powerup.java
         isSpeedy=true;
     }
     public void setLives(int lives){myLives=lives;}
-    public void setIndestructable(){indestructable=true;}
+    public void setIndestructible(){isIndestructible =true;}
 
 }

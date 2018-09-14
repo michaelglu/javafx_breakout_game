@@ -55,9 +55,9 @@ public class Main extends Application  {
         lives=new ArrayList();
         powerups=new ArrayList<>();
         //Load Images
-        gameOverImage = new Image(this.getClass().getClassLoader().getResourceAsStream("gameover.gif"));
-        splashImage=new Image(this.getClass().getClassLoader().getResourceAsStream("splashScreen.gif"));
-        lifeImage=new Image(this.getClass().getClassLoader().getResourceAsStream("life.gif"));
+        gameOverImage = new Image(this.getClass().getClassLoader().getResourceAsStream("gameover.GIF"));
+        splashImage=new Image(this.getClass().getClassLoader().getResourceAsStream("SplashScreen.GIF"));
+        lifeImage=new Image(this.getClass().getClassLoader().getResourceAsStream("life.GIF"));
 
         // create one top level collection to organize the things in the scene
         var root = new Group();
@@ -148,7 +148,7 @@ public class Main extends Application  {
            }
        }
        //The ball's logic for checking for wall collisions is inside the go() method
-        myBall.go(elapsedTime,SCREEN_WIDTH,SCREEN_HEIGHT);
+        myBall.go(elapsedTime);
     }
 
     public void handleKeyInput (KeyCode code, Group myGroup, int screenWidth) {
@@ -157,7 +157,7 @@ public class Main extends Application  {
         }
         if(code==KeyCode.I)//Especially useful for debugging, once on, can't be turned off
         {
-            myBall.setIndestructable();
+            myBall.setIndestructible();
         }
         if(code==KeyCode.DIGIT2)//Jump to level 2/reset level 2
         {
@@ -274,7 +274,7 @@ public class Main extends Application  {
     }
     public void startGame(Group myGroup){
         myGroup.getChildren().remove(splashScreen);
-        myBall.setSpeed(myBall.DEFAULTBALLSPEED);
+        myBall.setSpeed(myBall.DEFAULT_BALL_SPEED);
     }
 
     public static void main (String[] args) {

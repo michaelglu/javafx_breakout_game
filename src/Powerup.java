@@ -22,15 +22,15 @@ public class Powerup {
         myGroup=group;
         if (myType=="lives")
         {
-            myImage=new Image(this.getClass().getClassLoader().getResourceAsStream("life-power.gif"));
+            myImage=new Image(this.getClass().getClassLoader().getResourceAsStream("life-power.GIF"));
         }
         else if(myType=="size")
         {
-            myImage=new Image(this.getClass().getClassLoader().getResourceAsStream("paddle_size_power.gif"));
+            myImage=new Image(this.getClass().getClassLoader().getResourceAsStream("paddle_size_power.GIF"));
         }
         else if(myType=="speedy")
         {
-            myImage=new Image(this.getClass().getClassLoader().getResourceAsStream("speed-paddle-power.gif"));
+            myImage=new Image(this.getClass().getClassLoader().getResourceAsStream("speed-paddle-power.GIF"));
         }
         myIcon=new ImageView(myImage);
         myIcon.setFitWidth(10);
