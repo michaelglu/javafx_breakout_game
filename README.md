@@ -1,7 +1,7 @@
 game
 ====
 
-This project implements the game of Breakout.
+This CS308 project implements the game of Breakout.
 
 Name: Michael Glushakov
 
